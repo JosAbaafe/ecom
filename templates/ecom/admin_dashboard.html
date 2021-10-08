@@ -1,0 +1,88 @@
+{% extends 'ecom/admin_base.html' %}
+{% load static %}
+{% block content %}
+<head>
+  <link rel="stylesheet" href="//cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+  <script src="//cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+
+</head>
+<br>
+{%include 'ecom/admin_dashboard_cards.html'%}
+<br><br><br><br><br>
+
+<hr><hr>
+
+<div class="container" >
+
+   
+
+    <div class="report card card">
+      <div class="card-body">
+              <button onclick="print()" class="d-print-none btn btn-primary btn-sm m-4">Print</button>
+              <div class="text-center">
+                  
+                  <h2><b>Today's Orders</b> </h2>
+                  <hr>
+                </div>
+              <table class="table table-hover table-striped" id="myTable">
+                  <thead class="table-primary">
+                  <tr>
+                    <th>Date</th>
+                    <th>Customer Name</th>
+                    <th>Customer Mobile</th>
+                    <th>Shipment Address</th>
+                    <th>Product Name</th>
+                    <th>Product Picture</th>
+                    <th>Product Price(&#8373)</th>
+                    <th>Status</th>
+        
+                  </tr>
+                  </thead>
+                  <tbody>
+                    {% for product,customer,order in data %}
+                      <tr>
+                        <td>{{order.order_date}}</td>
+                        {% for c in customer %}
+                          <td> {{c.get_name}}</td>
+                          <td>{{c.mobile}}</td>
+                          <td>{{order.address}}</td>
+          
+                        {% endfor %}
+                        {% for p in product %}
+                          <td> {{p.name}}</td>
+                          <td> <img src="{% static p.product_image.url %}" alt="Profile Pic" height="40px" width="40px" /></td>
+                          <td>{{p.price}}</td>
+                        
+                          {% if order.status == 'Pending'%}
+                          <td> <span class="label label-info">{{order.status}}</span></td>
+                          {% elif order.status == 'Delivered' %}
+                          <td> <span class="label label-success">{{order.status}}</span></td>
+                          {% elif order.status == 'Out for Delivery' %}
+                          <td> <span class="label label-warning">{{order.status}}</span></td>
+                          {%else%}
+                            <td> <span class="label label-primary">{{order.status}}</span></td>
+                          {%endif%}
+                        {% endfor %}
+                      {% endfor %}
+                     
+                  </tbody>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td><h4><b>Total:</b></h4></td>
+                  <td><h4><b>GH&#8373 {{total}}.00</b></h4></td>
+                  <td></td>
+              </table>
+      </div>
+  </div>
+
+</div>
+<script>
+  $(document).ready( function () {
+    $('#myTable').DataTable();
+} );
+</script>
+
+{% endblock content %}
